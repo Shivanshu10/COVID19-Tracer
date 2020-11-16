@@ -69,7 +69,8 @@ def statusCountryDate(site):
     country=countrytoCode()
     date=input("Date (YYYY-MM-DD): ")
     try:
-        resp=get(site+"/"+country, data={'date':date})
+        resp=get(site+"/"+country, params={'date':date})
+        #print(resp.url)
     except Exception as err:
         print("Error: " + str(err))
         exit(1)
@@ -153,11 +154,12 @@ def menu(site):
         choice = int(input("Choice> "))
 
         if (choice==1):
-            statusCountry(site)
+            print(statusCountry(site))
         elif (choice==2):
-            statusCountryDate(site)
+            print(statusCountryDate(site))
         elif (choice==3):
-            diffCountry(site)
+            site = 'https://covid19-api.org/api'
+            print(diffCountry(site))
         elif (choice==4):
             predictionCountry(site)
         elif (choice==5):
