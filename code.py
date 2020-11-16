@@ -26,6 +26,11 @@ from json import loads
 # convert json string to python dicitionory
 from sys import exit
 # exit program with an exit code
+from pycountry import countries
+
+def countrytoCode():
+    country=input("Country: ")
+    return(countries.search_fuzzy(country)[0].alpha_2)
 
 def statusCountry(site):
     # get country name whose data is required
@@ -34,7 +39,7 @@ def statusCountry(site):
     # request API using GET method
     # convert response string to python dict
     # if error occurs print error code and reason of error
-    country=input("Country Code: ")
+    country=countrytoCode()
     try:
         resp=get(site+"/"+country)
     except Exception as err:
@@ -54,7 +59,7 @@ def statusCountryDate(site):
     # request API using GET method
     # convert response string to python dict
     # if error occurs print error code and reason of error
-    country=input("Country Code: ")
+    country=countrytoCode()
     date=input("Date (YYYY-MM-DD): ")
     try:
         resp=get(site+"/"+country, data={'date':date})
@@ -70,11 +75,12 @@ def statusCountryDate(site):
 def diffCountry(site):
     # get country name
     # takes API site as param
-    # returns python dict reprsenting data
+    # returns python dict reprsenting difference
+    # of current case and previous case
     # request API using GET method
     # convert response string to python dict
     # if error occurs print error code and reason of error
-    country=input("Country Code: ")
+    country=countrytoCode()
     try:
         resp=get(site+"/diff/"+country)
     except Exception as err:
@@ -89,11 +95,12 @@ def diffCountry(site):
 def predictionCountry(site):
     # get country name
     # takes API site as param
-    # returns python dict reprsenting data
+    # returns python dict reprsenting data 
+    # of prediction of cases in next 2 weeks using ML
     # request API using GET method
     # convert response string to python dict
     # if error occurs print error code and reason of error
-    country=input("Country Code: ")
+    country=countrytoCode()
     try:
         resp=get(site+"/prediction/"+country)
     except Exception as err:
@@ -105,6 +112,25 @@ def predictionCountry(site):
         print("Error: " + resp.status_code + ":" + resp.reason)
         exit(1)   
 
+def timeCases(site):
+    # get country name
+    # takes API site as param
+    # returns python dict reprsenting data of cases by country and time
+    # request API using GET method
+    # convert response string to python dict
+    # if error occurs print error code and reason of error
+    country=countrytoCode()
+    try:
+        resp=get(site+"/timeline/"+country)
+    except Exception as err:
+        print("Error: " + str(err))
+        exit(1)
+    if (resp.status_code==200):
+        return(loads(resp.content))
+    else:
+        print("Error: " + resp.status_code + ":" + resp.reason)
+        exit(1)
+
 def menu(site):
     # pass site url as parameter
     # get what user wants to do
@@ -115,6 +141,7 @@ def menu(site):
         print("2. Get status by country and date")
         print("3. Difference between Latest state and previous one by country")
         print("4. Get two weeks prediction by specific country")
+        print("5. Get timeline of cases by Country")
         print("99. Exit")
         choice = int(input("Choice> "))
 
@@ -126,6 +153,8 @@ def menu(site):
             diffCountry(site)
         elif (choice==4):
             predictionCountry(site)
+        elif (choice==5):
+            timeCases(site)
         elif (choice==99):
             exit(0)
 def main():
