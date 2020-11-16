@@ -27,8 +27,10 @@ from json import loads
 from sys import exit
 # exit program with an exit code
 from pycountry import countries
+# convert country to country code
 
 def countrytoCode():
+    # convert country to country code
     country=input("Country: ")
     return(countries.search_fuzzy(country)[0].alpha_2)
 
