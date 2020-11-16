@@ -32,7 +32,12 @@ from pycountry import countries
 def countrytoCode():
     # convert country to country code
     country=input("Country: ")
-    return(countries.search_fuzzy(country)[0].alpha_2)
+    try:
+        country_code = countries.search_fuzzy(country)[0].alpha_2
+    except LookupError:
+        print("Couldn't find country try different one")
+        return countrytoCode()
+    return(country_code)
 
 def statusCountry(site):
     # get country name whose data is required
@@ -50,7 +55,7 @@ def statusCountry(site):
     if (resp.status_code==200):
         return(loads(resp.content))
     else:
-        print("Error: " + resp.status_code + ":" + resp.reason)
+        print("Error: " + str(resp.status_code) + ":" + resp.reason)
         exit(1)
 
 def statusCountryDate(site):
@@ -71,7 +76,7 @@ def statusCountryDate(site):
     if (resp.status_code==200):
         return(loads(resp.content))
     else:
-        print("Error: " + resp.status_code + ":" + resp.reason)
+        print("Error: " + str(resp.status_code) + ":" + resp.reason)
         exit(1)
 
 def diffCountry(site):
@@ -91,7 +96,7 @@ def diffCountry(site):
     if (resp.status_code==200):
         return(loads(resp.content))
     else:
-        print("Error: " + resp.status_code + ":" + resp.reason)
+        print("Error: " + str(resp.status_code) + ":" + resp.reason)
         exit(1)
 
 def predictionCountry(site):
@@ -111,7 +116,7 @@ def predictionCountry(site):
     if (resp.status_code==200):
         return(loads(resp.content))
     else:
-        print("Error: " + resp.status_code + ":" + resp.reason)
+        print("Error: " + str(resp.status_code) + ":" + resp.reason)
         exit(1)   
 
 def timeCases(site):
@@ -130,7 +135,7 @@ def timeCases(site):
     if (resp.status_code==200):
         return(loads(resp.content))
     else:
-        print("Error: " + resp.status_code + ":" + resp.reason)
+        print("Error: " + str(resp.status_code) + ":" + resp.reason)
         exit(1)
 
 def menu(site):
