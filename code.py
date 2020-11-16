@@ -161,9 +161,9 @@ def menu(site):
             site = 'https://covid19-api.org/api'
             print(diffCountry(site))
         elif (choice==4):
-            predictionCountry(site)
+            print(predictionCountry(site))
         elif (choice==5):
-            timeCases(site)
+            print(timeCases(site))
         elif (choice==99):
             exit(0)
 def main():
