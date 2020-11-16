@@ -14,6 +14,8 @@
 # find what is webhooks
 # API provides a facility of webhooks
 # but i couldnt understand what it is
+# make a function to access timeline of COVID cases
+# try using pycountry to convert countryname to country code
 
 # docs of api
 # https://documenter.getpostman.com/view/10877427/SzYW2f8n?version=latest
