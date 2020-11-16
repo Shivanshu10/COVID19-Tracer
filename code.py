@@ -35,11 +35,15 @@ def statusCountry(site):
     # convert response string to python dict
     # if error occurs print error code and reason of error
     country=input("Country Code: ")
-    resp=get(site+"/"+country)
+    try:
+        resp=get(site+"/"+country)
+    except Exception as err:
+        print("Error: " + str(err))
+        exit(1)
     if (resp.status_code==200):
         return(loads(resp.content))
     else:
-        print("Error " + resp.status_code + ":" + resp.reason)
+        print("Error: " + resp.status_code + ":" + resp.reason)
         exit(1)
 
 def statusCountryDate(site):
@@ -52,11 +56,15 @@ def statusCountryDate(site):
     # if error occurs print error code and reason of error
     country=input("Country Code: ")
     date=input("Date (YYYY-MM-DD): ")
-    resp=get(site+"/"+country, data={'date':date})
+    try:
+        resp=get(site+"/"+country, data={'date':date})
+    except Exception as err:
+        print("Error: " + str(err))
+        exit(1)
     if (resp.status_code==200):
         return(loads(resp.content))
     else:
-        print("error " + resp.status_code + ":" + resp.reason)
+        print("Error: " + resp.status_code + ":" + resp.reason)
         exit(1)
 
 def diffCountry(site):
@@ -67,11 +75,15 @@ def diffCountry(site):
     # convert response string to python dict
     # if error occurs print error code and reason of error
     country=input("Country Code: ")
-    resp=get(site+"/diff/"+country)
+    try:
+        resp=get(site+"/diff/"+country)
+    except Exception as err:
+        print("Error: " + str(err))
+        exit(1)
     if (resp.status_code==200):
         return(loads(resp.content))
     else:
-        print("error " + resp.status_code + ":" + resp.reason)
+        print("Error: " + resp.status_code + ":" + resp.reason)
         exit(1)
 
 def predictionCountry(site):
@@ -82,11 +94,15 @@ def predictionCountry(site):
     # convert response string to python dict
     # if error occurs print error code and reason of error
     country=input("Country Code: ")
-    resp=get(site+"/prediction/"+country)
+    try:
+        resp=get(site+"/prediction/"+country)
+    except Exception as err:
+        print("Error: " + str(err))
+        exit(1)
     if (resp.status_code==200):
         return(loads(resp.content))
     else:
-        print("error " + resp.status_code + ":" + resp.reason)
+        print("Error: " + resp.status_code + ":" + resp.reason)
         exit(1)   
 
 def menu(site):
