@@ -46,9 +46,10 @@ def statusCountry(site):
     # request API using GET method
     # convert response string to python dict
     # if error occurs print error code and reason of error
+    subUrl = '/status'
     country=countrytoCode()
     try:
-        resp=get(site+"/"+country)
+        resp=get(site+subUrl+"/"+country)
     except Exception as err:
         print("Error: " + str(err))
         exit(1)
@@ -67,9 +68,10 @@ def statusCountryDate(site):
     # convert response string to python dict
     # if error occurs print error code and reason of error
     country=countrytoCode()
+    subUrl= '/status'
     date=input("Date (YYYY-MM-DD): ")
     try:
-        resp=get(site+"/"+country, params={'date':date})
+        resp=get(site+subUrl+"/"+country, params={'date':date})
         #print(resp.url)
     except Exception as err:
         print("Error: " + str(err))
@@ -139,6 +141,15 @@ def timeCases(site):
         print("Error: " + str(resp.status_code) + ":" + resp.reason)
         exit(1)
 
+def getChoice():
+    #Method to get user Input
+    try:
+        choice = int(input("Choice> "))
+    except ValueError:
+        print("Not a valid input")
+        return getChoice()
+    return choice
+
 def menu(site):
     # pass site url as parameter
     # get what user wants to do
@@ -151,24 +162,24 @@ def menu(site):
         print("4. Get two weeks prediction by specific country")
         print("5. Get timeline of cases by Country")
         print("99. Exit")
-        choice = int(input("Choice> "))
-
+        choice = getChoice()
         if (choice==1):
             print(statusCountry(site))
         elif (choice==2):
             print(statusCountryDate(site))
         elif (choice==3):
-            site = 'https://covid19-api.org/api'
             print(diffCountry(site))
         elif (choice==4):
-            predictionCountry(site)
+            print(predictionCountry(site))
         elif (choice==5):
-            timeCases(site)
+            print(timeCases(site))
         elif (choice==99):
             exit(0)
+        else:
+            print("Not a valid input")
 def main():
     # main method
-    menu('https://covid19-api.org/api/status')
+    menu('https://covid19-api.org/api')
 
 if __name__ == "__main__":
     # call main when this python file is not imported
