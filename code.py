@@ -28,7 +28,7 @@ from sys import exit
 # exit program with an exit code
 from pycountry import countries
 # convert country to country code
-import os
+from os import system, name
 
 
 def parse(dic):
@@ -58,7 +58,7 @@ def listParse(list):
 
 def clear():
     # Clear terminal showing previous outputs
-    os.system('cls' if os.name == 'nt' else 'clear')
+    system('cls' if name == 'nt' else 'clear')
 
 def countrytoCode():
     # convert country to country code
