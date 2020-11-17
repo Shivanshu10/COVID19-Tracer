@@ -29,6 +29,13 @@ from sys import exit
 from pycountry import countries
 # convert country to country code
 
+def parse(dic):
+    # takes dict as param
+    # repr json data
+    # iterate over every key, and print element at that key
+    for key in dic.keys():
+        print(key +":"+str(dic[key]))
+
 def countrytoCode():
     # convert country to country code
     country=input("Country: ")
@@ -154,16 +161,16 @@ def menu(site):
         choice = int(input("Choice> "))
 
         if (choice==1):
-            print(statusCountry(site))
+            parse(statusCountry(site))
         elif (choice==2):
-            print(statusCountryDate(site))
+            parse(statusCountryDate(site))
         elif (choice==3):
             site = 'https://covid19-api.org/api'
-            print(diffCountry(site))
+            parse(diffCountry(site))
         elif (choice==4):
-            print(predictionCountry(site))
+            parse(predictionCountry(site))
         elif (choice==5):
-            print(timeCases(site))
+            parse(timeCases(site))
         elif (choice==99):
             exit(0)
 def main():
