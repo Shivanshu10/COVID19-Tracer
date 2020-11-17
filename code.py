@@ -28,6 +28,8 @@ from sys import exit
 # exit program with an exit code
 from pycountry import countries
 # convert country to country code
+import os
+
 
 def parse(dic):
     # takes dict as param
@@ -37,7 +39,26 @@ def parse(dic):
     for key in dic.keys():
         print(key +" : "+str(dic[key]))
     print("\n**********************\n")
-    input("Press Enter to continue....")        
+    input("Press Enter to continue....") 
+    clear() 
+
+
+def listParse(list):
+    # takes list as param
+    # list contains dic
+    print("\n**********************")
+    for dic in list:
+        for key in dic.keys():
+           print(key +" : "+str(dic[key]))
+        print("\n",end="")
+    print("\n**********************\n")
+    input("Press Enter to continue....") 
+    clear()
+
+
+def clear():
+    # Clear terminal showing previous outputs
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 def countrytoCode():
     # convert country to country code
@@ -181,15 +202,16 @@ def menu(site):
             site = 'https://covid19-api.org/api'
             parse(diffCountry(site))
         elif (choice==4):
-            parse(predictionCountry(site))
+            listParse(predictionCountry(site))
         elif (choice==5):
-            parse(timeCases(site))
+            listParse(timeCases(site))
         elif (choice==99):
             exit(0)
         else:
             print("Not a valid input")
 def main():
     # main method
+    clear()
     menu('https://covid19-api.org/api')
 
 if __name__ == "__main__":
