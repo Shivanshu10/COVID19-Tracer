@@ -29,6 +29,19 @@ from sys import exit
 from pycountry import countries
 # convert country to country code
 from os import system, name
+# Using to detect Operating System
+from pynotifier import Notification
+# create notification
+
+
+def notification(notifyTitle, notifyDescription, notifyIcon_path):
+    Notification(
+        title=notifyTitle,
+        description=notifyDescription,
+        icon_path=notifyIcon_path, # On Windows .ico is required, on Linux - .png
+        duration=5,                              # Duration in seconds
+        urgency=Notification.URGENCY_CRITICAL
+    ).send()
 
 
 def parse(dic):
@@ -192,6 +205,7 @@ def menu(site):
         print("3. Difference between Latest state and previous one by country")
         print("4. Get two weeks prediction by specific country")
         print("5. Get timeline of cases by Country")
+        print("6. Test Notification")
         print("99. Exit")
         choice = getChoice()
         if (choice==1):
@@ -207,6 +221,8 @@ def menu(site):
             listParse(timeCases(site))
         elif (choice==99):
             exit(0)
+        elif (choice==6):
+            notification("Covid-19 Tracker", "Test Notification","covid.ico")
         else:
             print("Not a valid input")
 def main():
