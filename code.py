@@ -34,7 +34,11 @@ from pynotifier import Notification
 # create notification
 
 
-def notification(notifyTitle, notifyDescription, notifyIcon_path):
+def notification(notifyTitle, notifyDescription, notifyIcon):
+    if (name == 'nt'):
+        notifyIcon+='.ico'
+    else:
+        notifyIcon+='.png'
     Notification(
         title=notifyTitle,
         description=notifyDescription,
@@ -194,7 +198,7 @@ def getChoice():
         return getChoice()
     return choice
 
-def menu(site):
+def menu(site, iconname):
     # pass site url as parameter
     # get what user wants to do
     # and call corresponding function
@@ -222,13 +226,13 @@ def menu(site):
         elif (choice==99):
             exit(0)
         elif (choice==6):
-            notification("Covid-19 Tracker", "Test Notification","covid.ico")
+            notification("Covid-19 Tracker", "Test Notification", iconname)
         else:
             print("Not a valid input")
 def main():
     # main method
     clear()
-    menu('https://covid19-api.org/api')
+    menu('https://covid19-api.org/api', 'covid')
 
 if __name__ == "__main__":
     # call main when this python file is not imported
