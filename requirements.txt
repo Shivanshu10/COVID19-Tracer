@@ -1,0 +1,4 @@
+requests==2.24.0
+json==2.0.9
+pycountry==20.7.3
+
