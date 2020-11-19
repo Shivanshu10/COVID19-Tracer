@@ -39,10 +39,11 @@ def notification(notifyTitle, notifyDescription, notifyIcon):
         notifyIcon+='.ico'
     else:
         notifyIcon+='.png'
+    print(notifyIcon)
     Notification(
         title=notifyTitle,
         description=notifyDescription,
-        icon_path=notifyIcon_path, # On Windows .ico is required, on Linux - .png
+        icon_path=notifyIcon, # On Windows .ico is required, on Linux - .png
         duration=5,                              # Duration in seconds
         urgency=Notification.URGENCY_CRITICAL
     ).send()
