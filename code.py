@@ -1,25 +1,3 @@
-# TODO
-# Get choice of user
-# request the API server as per choice
-# show data to user
-# Find what is webhook
-# Convert country name to country code
-
-# Later
-# GUI
-# pyaudio
-# windows notification
-
-# TASK (GAURAV)
-# find what is webhooks
-# API provides a facility of webhooks
-# but i couldnt understand what it is
-# make a function to access timeline of COVID cases
-# try using pycountry to convert countryname to country code
-
-# docs of api
-# https://documenter.getpostman.com/view/10877427/SzYW2f8n?version=latest
-
 from requests import get
 # make a get request
 from json import loads
