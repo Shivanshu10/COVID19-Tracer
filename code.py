@@ -28,13 +28,14 @@ from sys import exit
 # exit program with an exit code
 from pycountry import countries
 # convert country to country code
-from os import system, name
+from os import system, name, getcwd
 # Using to detect Operating System
 from pynotifier import Notification
 # create notification
 
 
 def notification(notifyTitle, notifyDescription, notifyIcon):
+    notifyIcon=getcwd()+'/'+notifyIcon
     if (name == 'nt'):
         notifyIcon+='.ico'
     else:
