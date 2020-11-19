@@ -5,7 +5,7 @@ This is a covid19 tracer implemented using web scraping
 ```
 git clone https://github.com/Shivanshu10/COVID19-Tracer.git
 cd COVID19-Tracer
-pip install requirement.txt
+pip install requirements.txt
 python3 code.py
 ```
 
