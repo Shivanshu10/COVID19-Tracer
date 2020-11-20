@@ -42,7 +42,7 @@ def scheduleLinux(schedule_script):
     # schedule script on every boot
     cron=CronTab()
     cmd='export DISPLAY=:0.0 && '
-    python3_path=system('where python3' if name == 'nt' else 'which python3')
+    python3_path=system('which python3')
     cmd+=(python3_path+" "+getcwd()+"/"+schedule_script) 
     schedule=cron.new(command=cmd, comment='COVID19 Tracer Info notification')
     schedule.every_reboot()
@@ -77,10 +77,14 @@ def rmSubscribe():
         subscription_file.seek(0)
         subscription_file.write("")
 
-def subscribe():
+def subscribe(schedule_script):
+    # takes script to schedule as parameter
+    # clear previous subscriptions
     # asks user which country to subscribe
     # type of data to subscribe
     # create a file containing subscription details
+    # schedule given script
+    rmSubscribe()
     country=input("Country to subscribe: ")
     clear()
     print("Type of Subscription:")
@@ -92,6 +96,7 @@ def subscribe():
     with open('subscribe.txt', 'wb') as subscription_file:
         subscription_file.seek(0)
         subscription_file.write(subscription_data)
+    schedule(schedule_script)
 
 def checkSubscription():
     # read subscription file
