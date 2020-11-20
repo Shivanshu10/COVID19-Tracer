@@ -1,9 +1,5 @@
 # TODO
-# Get choice of user
-# request the API server as per choice
-# show data to user
-# Find what is webhook
-# Convert country name to country code
+# test 
 
 # Later
 # GUI
@@ -11,11 +7,7 @@
 # windows notification
 
 # TASK (GAURAV)
-# find what is webhooks
-# API provides a facility of webhooks
-# but i couldnt understand what it is
-# make a function to access timeline of COVID cases
-# try using pycountry to convert countryname to country code
+# make functions for windows
 
 # docs of api
 # https://documenter.getpostman.com/view/10877427/SzYW2f8n?version=latest
@@ -29,18 +21,94 @@ from sys import exit
 from pycountry import countries
 # convert country to country code
 from os import system, name, getcwd
-# Using to detect Operating System
+# Used detect Operating System, getcwd and execute shell cmd
 from pynotifier import Notification
 # create notification
+from crontab import CronTab
+# schedule script
 
+def schedule(schedule_script):
+    # param, name of script to schedule
+    # check if winows or linux and call
+    # corresponding func
+    if (name=='nt'):
+        scheduleWindows(schedule_script)
+    else:
+        scheduleLinux(schedule_script)
+
+def scheduleLinux(schedule_script):
+    # takes name of script to schedule on linux
+    # schedule a ps in linux using crontab
+    # schedule script on every boot
+    cron=CronTab()
+    cmd='export DISPLAY=:0.0 && '
+    python3_path=system('where python3' if name == 'nt' else 'which python3')
+    cmd+=(python3_path+" "+getcwd()+"/"+schedule_script) 
+    schedule=cron.new(command=cmd, comment='COVID19 Tracer Info notification')
+    schedule.every_reboot()
+    cron.write()
+
+def scheduleWindows(schedule_script):
+    # takes name of script to schedule on windows
+    # schedule a ps on every boot
+    pass
+
+def rmScheduleLinux():
+    # remove from task scheduler linux
+    cron=CronTab()
+    jobs=cron.find_comment("COVID19 Tracer Info notification")
+    for job in jobs:
+        cron.remove(job)
+
+def rmScheduleWindows():
+    # rm from task scheduler windows 
+    pass
+
+def rmSubscribe():
+    # remove subscription
+    # clear subscription data
+    # remove from schedule jobs
+    # call corresponding func based on OS
+    if (name=='nt'):
+        rmScheduleWindows()
+    else:
+        rmScheduleLinux()
+    with open('subscribe.txt', 'w') as subscription_file:
+        subscription_file.seek(0)
+        subscription_file.write("")
+
+def subscribe():
+    # asks user which country to subscribe
+    # type of data to subscribe
+    # create a file containing subscription details
+    country=input("Country to subscribe: ")
+    clear()
+    print("Type of Subscription:")
+    print("1. Get status by Country")
+    print("2. Difference between Latest state and previous one by country")
+    type_subscription=int(input("Choose> "))
+    clear()
+    subscription_data={'country': country, 'type': type_subscription}
+    with open('subscribe.txt', 'wb') as subscription_file:
+        subscription_file.seek(0)
+        subscription_file.write(subscription_data)
+
+def checkSubscription():
+    # read subscription file
+    with open('subscribe.txt', 'rb') as subscription_file:
+        subscription_data=subscription_file.read()
+    return (subscription_data)
 
 def notification(notifyTitle, notifyDescription, notifyIcon):
+    # params are notification title, descr, iconname
+    # pass full path of icon
+    # select icon type accrdg to os name
+    # urgent notification
     notifyIcon=getcwd()+'/'+notifyIcon
     if (name == 'nt'):
         notifyIcon+='.ico'
     else:
         notifyIcon+='.png'
-    print(notifyIcon)
     Notification(
         title=notifyTitle,
         description=notifyDescription,
@@ -48,7 +116,6 @@ def notification(notifyTitle, notifyDescription, notifyIcon):
         duration=5,                              # Duration in seconds
         urgency=Notification.URGENCY_CRITICAL
     ).send()
-
 
 def parse(dic):
     # takes dict as param
@@ -61,7 +128,6 @@ def parse(dic):
     input("Press Enter to continue....") 
     clear() 
 
-
 def listParse(list):
     # takes list as param
     # list contains dic
@@ -73,7 +139,6 @@ def listParse(list):
     print("\n**********************\n")
     input("Press Enter to continue....") 
     clear()
-
 
 def clear():
     # Clear terminal showing previous outputs
@@ -211,7 +276,8 @@ def menu(site, iconname):
         print("3. Difference between Latest state and previous one by country")
         print("4. Get two weeks prediction by specific country")
         print("5. Get timeline of cases by Country")
-        print("6. Test Notification")
+        print("6. Subscribe")
+        print("7. Remove Subscription")
         print("99. Exit")
         choice = getChoice()
         if (choice==1):
@@ -225,12 +291,15 @@ def menu(site, iconname):
             listParse(predictionCountry(site))
         elif (choice==5):
             listParse(timeCases(site))
+        elif (choice==6):
+            subscribe()
+        elif (choice == 7):
+            rmSubscribe()
         elif (choice==99):
             exit(0)
-        elif (choice==6):
-            notification("Covid-19 Tracker", "Test Notification", iconname)
         else:
-            print("Not a valid input")
+            print("Not a valid input")\
+
 def main():
     # main method
     clear()
