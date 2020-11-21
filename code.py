@@ -1,3 +1,4 @@
+
 # TODO
 # test 
 
@@ -13,28 +14,38 @@
 # https://documenter.getpostman.com/view/10877427/SzYW2f8n?version=latest
 
 API='https://covid19-api.org/api'
-ICON_NAME=""
-SCHEDULE_SCRIPT=""
+ICON_NAME="covid"
+SCHEDULE_SCRIPT="schedulescript.py"
+SCHEDULED="scheduled.txt"
 
 from requests import get
 # make a get request
 from json import loads
 # convert json string to python dicitionory
 from sys import exit
-# exit program with an exit code
+# exit program with an exit code and check shell cmd output
 from pycountry import countries
 # convert country to country code
 from os import system, name, getcwd
 # Used detect Operating System, getcwd and execute shell cmd
 from pynotifier import Notification
 # create notification
-from crontab import CronTab
-# schedule script
+from ast import literal_eval
+# convert str having dict to dict
 
-def schedule(schedule_script):
+def init(scheduled):
+    with open(scheduled, "w") as scheduled:
+        scheduled.write(str(0))
+
+def clear():
+    # Clear terminal showing previous outputs
+    system('cls' if name == 'nt' else 'clear')
+
+def schedule(schedule_script, scheduled):
     # param, name of script to schedule
     # check if winows or linux and call
     # corresponding func
+    setScheduled(scheduled, str(1))
     if (name=='nt'):
         scheduleWindows(schedule_script)
     else:
@@ -44,51 +55,80 @@ def scheduleLinux(schedule_script):
     # takes name of script to schedule on linux
     # schedule a ps in linux using crontab
     # schedule script on every boot
-    cron=CronTab()
-    cmd='export DISPLAY=:0.0 && '
-    python3_path=system('which python3')
-    cmd+=(python3_path+" "+getcwd()+"/"+schedule_script) 
-    schedule=cron.new(command=cmd, comment='COVID19 Tracer Info notification')
-    schedule.every_reboot()
-    cron.write()
+    from subprocess import check_output
+    try:
+        usrname=check_output('whoami').decode('utf-8')[:-1]
+        # cmd='@reboot '+usrname+' export DISPLAY=:0.0 && '
+        pwd=getcwd()
+        cmd='@reboot '+ usrname + " cd " + pwd + ' && export DISPLAY=:0.0 && '
+        python3_path=check_output(['which', 'python3']).decode('utf-8')[:-1] 
+        cmd+=(python3_path+" "+getcwd()+"/"+schedule_script) 
+        with open("schedule.sh", 'w') as script:
+            script.write("sudo echo \""+cmd+"\n\" >> /etc/crontab" )
+        system("sudo bash schedule.sh")
+    except Exception as err:
+        print("Error: " + err)
+        exit(1)
 
 def scheduleWindows(schedule_script):
     # takes name of script to schedule on windows
     # schedule a ps on every boot
     pass
 
-def rmScheduleLinux():
+def rmScheduleLinux(schedule_script):
     # remove from task scheduler linux
-    cron=CronTab()
-    jobs=cron.find_comment("COVID19 Tracer Info notification")
-    for job in jobs:
-        cron.remove(job)
+    from subprocess import check_output
+    usrname=check_output('whoami').decode('utf-8')[:-1]
+    cmd='@reboot '+usrname+' export DISPLAY=:0.0 && '
+    python3_path=check_output(['which', 'python3']).decode('utf-8')[:-1] 
+    cmd+=(python3_path+" "+getcwd()+"/"+schedule_script) 
+    with open("schedule.sh", 'w') as script:
+        script.write("sudo sed \"/"+cmd+"/d"+"\" /etc/crontab > /etc/crontab")
+    system("sudo bash schedule.sh")
 
 def rmScheduleWindows():
     # rm from task scheduler windows 
     pass
 
-def rmSubscribe():
+def rmSubscribe(schedule_script, scheduled):
     # remove subscription
     # clear subscription data
     # remove from schedule jobs
     # call corresponding func based on OS
-    if (name=='nt'):
-        rmScheduleWindows()
+    clear()
+    print("Unsuscribe")
+    choice=(read("Remove All Subscription (y/n): ")).lower()
+    if (choice=='y'):
+        if (name=='nt'):
+            rmScheduleWindows(schedule_script)
+        else:
+            rmScheduleLinux(schedule_script)
+        setScheduled(scheduled, str(0))
+        system("echo \"\" > subscribe.txt")
     else:
-        rmScheduleLinux()
-    with open('subscribe.txt', 'w') as subscription_file:
-        subscription_file.seek(0)
-        subscription_file.write("")
+        country=(read("Country to Unsubscribe")).lower()
+        print("Type of Subscription")
+        print("1. Get status by Country")
+        print("2. Difference between Latest state and previous one by country")
+        type_subscription=int(input("Choose> "))
+        clear()
+        infos=[]
+        with open('subscribe.txt', 'r') as subscription_file:
+            for line in subscription_file:
+                data=literal_eval(line)
+                if (data['country']!=country or data['type']!=type_subscription):
+                    infos.append(data)
+        with open('subscribe.txt', 'w') as subscription_file:
+            for info in infos:
+                subscription_file.write(str(info)+"\n")
 
-def subscribe(schedule_script):
+def subscribe(schedule_script, scheduled):
     # takes script to schedule as parameter
     # clear previous subscriptions
     # asks user which country to subscribe
     # type of data to subscribe
     # create a file containing subscription details
     # schedule given script
-    rmSubscribe()
     country=input("Country to subscribe: ")
     clear()
     print("Type of Subscription:")
@@ -96,17 +136,26 @@ def subscribe(schedule_script):
     print("2. Difference between Latest state and previous one by country")
     type_subscription=int(input("Choose> "))
     clear()
-    subscription_data={'country': country, 'type': type_subscription}
-    with open('subscribe.txt', 'wb') as subscription_file:
-        subscription_file.seek(0)
-        subscription_file.write(subscription_data)
-    schedule(schedule_script)
+    subscription_data={'country': country.lower(), 'type': type_subscription}
+    with open('subscribe.txt', 'a') as subscription_file:
+        subscription_file.writelines(str(subscription_data)+"\n")
+    if (isScheduled(scheduled)==0):
+        schedule(schedule_script, scheduled)
+
+def isScheduled(scheduled):
+    with open(scheduled, 'r') as scheduled:
+        return int(scheduled.read())
+
+def setScheduled(scheduled, data):
+    with open(scheduled, 'w') as scheduled:
+        scheduled.write(data)
 
 def checkSubscription():
     # read subscription file
-    with open('subscribe.txt', 'rb') as subscription_file:
-        subscription_data=subscription_file.read()
-    return (subscription_data)
+    data=[]
+    with open('subscribe.txt', 'r') as subscription_file:
+        for line in subscription_file:
+            yield(literal_eval(line))
 
 def notification(notifyTitle, notifyDescription, notifyIcon):
     # params are notification title, descr, iconname
@@ -149,10 +198,6 @@ def listParse(list):
     input("Press Enter to continue....") 
     clear()
 
-def clear():
-    # Clear terminal showing previous outputs
-    system('cls' if name == 'nt' else 'clear')
-
 def read(key):
     return(input(key+": "))
 
@@ -174,7 +219,7 @@ def statusCountry(site, country):
     # if error occurs print error code and reason of error
     subUrl = '/status'
     try:
-        resp=get(site+subUrl+"/"+country)
+        resp=get(site+subUrl+"/"+countrytoCode(country))
     except Exception as err:
         print("Error: " + str(err))
         exit(1)
@@ -194,7 +239,7 @@ def statusCountryDate(site, country, date):
     # if error occurs print error code and reason of error
     subUrl= '/status'
     try:
-        resp=get(site+subUrl+"/"+country, params={'date':date})
+        resp=get(site+subUrl+"/"+countrytoCode(country), params={'date':date})
         #print(resp.url)
     except Exception as err:
         print("Error: " + str(err))
@@ -214,7 +259,7 @@ def diffCountry(site, country):
     # convert response string to python dict
     # if error occurs print error code and reason of error
     try:
-        resp=get(site+"/diff/"+country)
+        resp=get(site+"/diff/"+countrytoCode(country))
     except Exception as err:
         print("Error: " + str(err))
         exit(1)
@@ -233,7 +278,7 @@ def predictionCountry(site, country):
     # convert response string to python dict
     # if error occurs print error code and reason of error
     try:
-        resp=get(site+"/prediction/"+country)
+        resp=get(site+"/prediction/"+countrytoCode(country))
     except Exception as err:
         print("Error: " + str(err))
         exit(1)
@@ -251,7 +296,7 @@ def timeCases(site, country):
     # convert response string to python dict
     # if error occurs print error code and reason of error
     try:
-        resp=get(site+"/timeline/"+country)
+        resp=get(site+"/timeline/"+countrytoCode(country))
     except Exception as err:
         print("Error: " + str(err))
         exit(1)
@@ -270,7 +315,7 @@ def getChoice():
         return getChoice()
     return choice
 
-def menu(site, schedule_script):
+def menu(site, schedule_script, scheduled):
     # pass site url as parameter
     # get what user wants to do
     # and call corresponding function
@@ -286,25 +331,25 @@ def menu(site, schedule_script):
         print("99. Exit")
         choice = getChoice()
         if (choice==1):
-            country=countrytoCode(read('country'))
+            country=countrytoCode(read('Country'))
             parse(statusCountry(site, country))
         elif (choice==2):
-            country=countrytoCode(read('country'))
-            date=read('date (YYYY-MM-DD)')
+            country=countrytoCode(read('Country'))
+            date=read('Date (YYYY-MM-DD)')
             parse(statusCountryDate(site, country, date))
         elif (choice==3):
-            country=countrytoCode(read('country'))
+            country=countrytoCode(read('Country'))
             parse(diffCountry(site, country))
         elif (choice==4):
-            country=countrytoCode(read('country'))
+            country=countrytoCode(read('Country'))
             listParse(predictionCountry(site, country))
         elif (choice==5):
-            country=countrytoCode(read('country'))
+            country=countrytoCode(read('Country'))
             listParse(timeCases(site, country))
         elif (choice==6):
-            subscribe(schedule_script)
+            subscribe(schedule_script, scheduled)
         elif (choice == 7):
-            rmSubscribe()
+            rmSubscribe(schedule_script, scheduled)
         elif (choice==99):
             exit(0)
         else:
@@ -315,7 +360,8 @@ def main():
     # clear screen
     # show menu
     clear()
-    menu(API, SCHEDULE_SCRIPT)
+    init(SCHEDULED)
+    menu(API, SCHEDULE_SCRIPT, SCHEDULED)
 
 if __name__ == "__main__":
     # call main when this python file is not imported
