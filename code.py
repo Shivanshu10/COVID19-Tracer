@@ -12,6 +12,10 @@
 # docs of api
 # https://documenter.getpostman.com/view/10877427/SzYW2f8n?version=latest
 
+API='https://covid19-api.org/api'
+ICON_NAME=""
+SCHEDULE_SCRIPT=""
+
 from requests import get
 # make a get request
 from json import loads
@@ -149,9 +153,11 @@ def clear():
     # Clear terminal showing previous outputs
     system('cls' if name == 'nt' else 'clear')
 
-def countrytoCode():
+def read(key):
+    return(input(key+": "))
+
+def countrytoCode(country):
     # convert country to country code
-    country=input("Country: ")
     try:
         country_code = countries.search_fuzzy(country)[0].alpha_2
     except LookupError:
@@ -159,7 +165,7 @@ def countrytoCode():
         return countrytoCode()
     return(country_code)
 
-def statusCountry(site):
+def statusCountry(site, country):
     # get country name whose data is required
     # takes API site as param
     # returns python  dict reprsenting status of country
@@ -167,7 +173,6 @@ def statusCountry(site):
     # convert response string to python dict
     # if error occurs print error code and reason of error
     subUrl = '/status'
-    country=countrytoCode()
     try:
         resp=get(site+subUrl+"/"+country)
     except Exception as err:
@@ -179,7 +184,7 @@ def statusCountry(site):
         print("Error: " + str(resp.status_code) + ":" + resp.reason)
         exit(1)
 
-def statusCountryDate(site):
+def statusCountryDate(site, country, date):
     # get country name and date at which status is required
     # get date on which data is required
     # takes API site as param
@@ -187,9 +192,7 @@ def statusCountryDate(site):
     # request API using GET method
     # convert response string to python dict
     # if error occurs print error code and reason of error
-    country=countrytoCode()
     subUrl= '/status'
-    date=input("Date (YYYY-MM-DD): ")
     try:
         resp=get(site+subUrl+"/"+country, params={'date':date})
         #print(resp.url)
@@ -202,7 +205,7 @@ def statusCountryDate(site):
         print("Error: " + str(resp.status_code) + ":" + resp.reason)
         exit(1)
 
-def diffCountry(site):
+def diffCountry(site, country):
     # get country name
     # takes API site as param
     # returns python dict reprsenting difference
@@ -210,7 +213,6 @@ def diffCountry(site):
     # request API using GET method
     # convert response string to python dict
     # if error occurs print error code and reason of error
-    country=countrytoCode()
     try:
         resp=get(site+"/diff/"+country)
     except Exception as err:
@@ -222,7 +224,7 @@ def diffCountry(site):
         print("Error: " + str(resp.status_code) + ":" + resp.reason)
         exit(1)
 
-def predictionCountry(site):
+def predictionCountry(site, country):
     # get country name
     # takes API site as param
     # returns python dict reprsenting data 
@@ -230,7 +232,6 @@ def predictionCountry(site):
     # request API using GET method
     # convert response string to python dict
     # if error occurs print error code and reason of error
-    country=countrytoCode()
     try:
         resp=get(site+"/prediction/"+country)
     except Exception as err:
@@ -242,14 +243,13 @@ def predictionCountry(site):
         print("Error: " + str(resp.status_code) + ":" + resp.reason)
         exit(1)   
 
-def timeCases(site):
+def timeCases(site, country):
     # get country name
     # takes API site as param
     # returns python dict reprsenting data of cases by country and time
     # request API using GET method
     # convert response string to python dict
     # if error occurs print error code and reason of error
-    country=countrytoCode()
     try:
         resp=get(site+"/timeline/"+country)
     except Exception as err:
@@ -270,7 +270,7 @@ def getChoice():
         return getChoice()
     return choice
 
-def menu(site, iconname):
+def menu(site, schedule_script):
     # pass site url as parameter
     # get what user wants to do
     # and call corresponding function
@@ -286,29 +286,36 @@ def menu(site, iconname):
         print("99. Exit")
         choice = getChoice()
         if (choice==1):
-            parse(statusCountry(site))
+            country=countrytoCode(read('country'))
+            parse(statusCountry(site, country))
         elif (choice==2):
-            parse(statusCountryDate(site))
+            country=countrytoCode(read('country'))
+            date=read('date (YYYY-MM-DD)')
+            parse(statusCountryDate(site, country, date))
         elif (choice==3):
-            site = 'https://covid19-api.org/api'
-            parse(diffCountry(site))
+            country=countrytoCode(read('country'))
+            parse(diffCountry(site, country))
         elif (choice==4):
-            listParse(predictionCountry(site))
+            country=countrytoCode(read('country'))
+            listParse(predictionCountry(site, country))
         elif (choice==5):
-            listParse(timeCases(site))
+            country=countrytoCode(read('country'))
+            listParse(timeCases(site, country))
         elif (choice==6):
-            subscribe()
+            subscribe(schedule_script)
         elif (choice == 7):
             rmSubscribe()
         elif (choice==99):
             exit(0)
         else:
-            print("Not a valid input")\
+            print("Not a valid input")
 
 def main():
     # main method
+    # clear screen
+    # show menu
     clear()
-    menu('https://covid19-api.org/api', 'covid')
+    menu(API, SCHEDULE_SCRIPT)
 
 if __name__ == "__main__":
     # call main when this python file is not imported
