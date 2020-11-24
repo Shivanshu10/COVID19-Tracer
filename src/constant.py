@@ -1,5 +1,7 @@
 # constants and global var
 from os import getcwd
+from os import name
+from sys import exit
 
 API='https://covid19-api.org/api'
 ICON_NAME="/resource/icon/covid"
@@ -28,3 +30,11 @@ def init():
     BASH_SCRIPT=PWD+BASH_SCRIPT
     LOG=PWD+LOG
     TMP=PWD+TMP
+    if (name == 'nt'):
+        # changing '/' to '\' for windows
+        ICON_NAME= ICON_NAME.replace("/", "\\")
+        SCHEDULE_SCRIPT= SCHEDULE_SCRIPT.replace("/", "\\")
+        SCHEDULED= SCHEDULED.replace("/", "\\")
+        SUBSCRIPTION= SUBSCRIPTION.replace("/", "\\")
+        LOG= LOG.replace("/", "\\")
+        TMP= TMP.replace("/", "\\")

@@ -1,5 +1,5 @@
 import constant
-from os import name, system
+from os import name, system, getcwd, popen
 
 def init():
     scheduled = constant.SCHEDULED
@@ -37,7 +37,9 @@ def scheduleLinux(schedule_script):
 def scheduleWindows(schedule_script):
     # takes name of script to schedule on windows
     # schedule a ps on every boot
-    pass
+    cwd = getcwd()
+    command = 'schtasks -create -tn "CovidTracer" -tr "%s\schedulescript.pyw" -sc onstart -v1' % cwd 
+    system(command)
 
 def rmScheduleLinux(schedule_script):
     # remove from task scheduler linux
@@ -57,7 +59,9 @@ def rmScheduleLinux(schedule_script):
     exit(0)
 
 def rmScheduleWindows(placeholder):
-    # rm from task scheduler windows 
+    # rm from task scheduler windows
+    command = "schtasks -delete -tn CovidTracer -f"
+    popen(command)
     pass
 
 def isScheduled(scheduled):

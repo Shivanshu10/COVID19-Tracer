@@ -5,6 +5,7 @@ import subscription
 import apiParser
 import userInput
 import tracer
+import ctypes, sys
 
 def countrytoCode(country):
     # convert country to country code
@@ -12,8 +13,15 @@ def countrytoCode(country):
         country_code = countries.search_fuzzy(country)[0].alpha_2
     except LookupError:
         print("Couldn't find country try different one")
-        return countrytoCode(country)
+        return countrytoCode(userInput.read('Country'))
     return(country_code)
+
+def is_admin():
+    # Check for windows if admin access is available
+    try:
+        return ctypes.windll.shell32.IsUserAnAdmin()
+    except:
+        return False
 
 def clear():
     # Clear terminal showing previous outputs
@@ -52,9 +60,18 @@ def createMenu(site, schedule_script, scheduled):
             country=countrytoCode(userInput.read('Country'))
             apiParser.listParse(tracer.timeCases(country))
         elif (choice==6):
-            subscription.subscribe(schedule_script, scheduled)
+            if (is_admin() or name != 'nt'):
+                # Code of your program here
+                subscription.subscribe(schedule_script, scheduled)
+            else:
+                # Re-run the program with admin rights
+                ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, " ".join(sys.argv), None, 1)
         elif (choice == 7):
-            subscription.rmSubscribe(schedule_script, scheduled)
+            if (is_admin() or name != 'nt'):
+                subscription.rmSubscribe(schedule_script, scheduled)
+            else:
+                # Re-run the program with admin rights
+                ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, " ".join(sys.argv), None, 1)
         elif (choice==99):
             exit(0)
         else:
