@@ -2,9 +2,11 @@ import subscription
 import tracer
 import constant
 import notification
+from timer import sleep
 
 def main():
     constant.init()
+    sleep(60*3)
     subcriptionData=subscription.checkSubscription()
     for data in subcriptionData:
         try:
