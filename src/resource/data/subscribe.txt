@@ -1,1 +1,1 @@
-{'country': 'india', 'type': 2}
+{'country': 'india', 'type': 1}

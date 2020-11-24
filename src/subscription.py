@@ -36,15 +36,20 @@ def rmSubscribe(schedule_script, scheduled):
     if (choice=='y'):
         if (name=='nt'):
             scheduler.rmScheduleWindows(schedule_script)
+            system("del " + constant.SUBSCRIPTION)
+            #system("del " + constant.BASH_SCRIPT)
+            system("del " + constant.SCHEDULED)
+            #system("del " + constant.LOG)
         else:
             scheduler.rmScheduleLinux(schedule_script)
+            system("rm " + constant.SUBSCRIPTION)
+            system("rm " + constant.BASH_SCRIPT)
+            system("rm " + constant.SCHEDULED)
+            #system("rm " + constant.LOG)
         setScheduled(scheduled, str(0))
-        system("rm " + constant.SUBSCRIPTION)
-        system("rm " + constant.BASH_SCRIPT)
-        system("rm " + constant.SCHEDULED)
-        system("rm " + constant.LOG)
-        exit(0)
-
+        
+        #exit(0)
+            
     else:
         country=(userInput.read("Country to Unsubscribe")).lower()
         print("Type of Subscription")
