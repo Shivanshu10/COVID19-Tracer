@@ -1,5 +1,0 @@
-/home/shivanshu/anaconda3/bin/python3: can't open file '/home/shivanshu/COVID/src/home/shivanshu/COVID/src/schedulescript.pyw': [Errno 2] No such file or directory
-/home/shivanshu/anaconda3/bin/python3: can't open file '/home/shivanshu/COVID/src/home/shivanshu/COVID/src/schedulescript.pyw': [Errno 2] No such file or directory
-/home/shivanshu/anaconda3/bin/python3: can't open file '/home/shivanshu/COVID/src/home/shivanshu/COVID/src/schedulescript.pyw': [Errno 2] No such file or directory
-/home/shivanshu/anaconda3/bin/python3: can't open file '/home/shivanshu/COVID/src/home/shivanshu/COVID/src/schedulescript.pyw': [Errno 2] No such file or directory
-/home/shivanshu/anaconda3/bin/python3: can't open file '/home/shivanshu/COVID/src/home/shivanshu/COVID/src/schedulescript.pyw': [Errno 2] No such file or directory

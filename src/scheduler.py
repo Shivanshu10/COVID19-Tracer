@@ -50,6 +50,10 @@ def rmScheduleLinux(schedule_script):
     with open(constant.BASH_SCRIPT, 'w') as script:
         script.write("sudo grep -v \""+ cmd +"\" /etc/crontab > " + constant.TMP + " && sudo mv " + constant.TMP + " /etc/crontab")
     system("sudo bash " + constant.BASH_SCRIPT)
+    system("sudo rm " + constant.SUBSCRIPTION)
+    system("sudo rm " + constant.BASH_SCRIPT)
+    system("sudo rm " + constant.SCHEDULED)
+    system("sudo rm " + constant.LOG)
     exit(0)
 
 def rmScheduleWindows(placeholder):

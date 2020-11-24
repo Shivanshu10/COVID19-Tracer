@@ -42,6 +42,8 @@ def rmSubscribe(schedule_script, scheduled):
         system("rm " + constant.SUBSCRIPTION)
         system("rm " + constant.BASH_SCRIPT)
         system("rm " + constant.SCHEDULED)
+        system("rm " + constant.LOG)
+        exit(0)
 
     else:
         country=(userInput.read("Country to Unsubscribe")).lower()
