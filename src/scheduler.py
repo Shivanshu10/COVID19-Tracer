@@ -24,7 +24,7 @@ def scheduleLinux(schedule_script):
     try:
         usrname=check_output('whoami').decode('utf-8')[:-1]
         # cmd='@reboot '+ usrname + " cd " + pwd + ' && export DISPLAY=:0.0 && '
-        cmd='* * * * * '+ usrname + " cd " + constant.PWD + ' && export DISPLAY=:0.0 && '
+        cmd='@reboot sleep 300 '+ usrname + " cd " + constant.PWD + ' && export DISPLAY=:0.0 && '
         python3_path=check_output(['which', 'python3']).decode('utf-8')[:-1] 
         cmd=cmd+(python3_path+" "+schedule_script+" >> " + constant.LOG + " 2>&1 ") 
         with open(constant.BASH_SCRIPT, 'w') as script:
@@ -38,7 +38,7 @@ def scheduleWindows(schedule_script):
     # takes name of script to schedule on windows
     # schedule a ps on every boot
     cwd = getcwd()
-    command = 'schtasks -create -tn "CovidTracer" -tr "%s\schedulescript.pyw" -sc onstart -v1' % cwd 
+    command = 'schtasks -create -delay 0010:00 -tn "CovidTracer" -tr "%s\schedulescript.pyw" -sc onstart -v1' % cwd 
     system(command)
 
 def rmScheduleLinux(schedule_script):
@@ -46,7 +46,7 @@ def rmScheduleLinux(schedule_script):
     from subprocess import check_output
     usrname=check_output('whoami').decode('utf-8')[:-1]
     # cmd='@reboot '+usrname+' export DISPLAY=:0.0 && '
-    cmd='* * * * * '+ usrname + " cd " + constant.PWD + ' && export DISPLAY=:0.0 && '
+    cmd='@reboot sleep 300 '+ usrname + " cd " + constant.PWD + ' && export DISPLAY=:0.0 && '
     python3_path=check_output(['which', 'python3']).decode('utf-8')[:-1] 
     cmd=cmd+(python3_path+" "+schedule_script+" >> " + constant.LOG + " 2>&1 ") 
     with open(constant.BASH_SCRIPT, 'w') as script:
