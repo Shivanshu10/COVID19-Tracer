@@ -37,8 +37,9 @@ def scheduleLinux(schedule_script):
 def scheduleWindows(schedule_script):
     # takes name of script to schedule on windows
     # schedule a ps on every boot
+    # Tested
     cwd = getcwd()
-    command = 'schtasks -create -delay 0010:00 -tn "CovidTracer" -tr "%s\schedulescript.pyw" -sc onstart -v1' % cwd 
+    command = 'schtasks -create -delay 0100:10 -tn "CovidTracer" -tr "%s\schedulescript.pyw" -sc onlogon -v1' % cwd 
     system(command)
 
 def rmScheduleLinux(schedule_script):
