@@ -17,6 +17,6 @@ def createNotification(notifyTitle, notifyDescription, notifyIcon):
         title=notifyTitle,
         description=notifyDescription,
         icon_path=notifyIcon, # On Windows .ico is required, on Linux - .png
-        duration=5,                              # Duration in seconds
+        duration=10,                              # Duration in seconds
         urgency=Notification.URGENCY_CRITICAL
     ).send()

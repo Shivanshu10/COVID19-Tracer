@@ -10,10 +10,10 @@ def main():
         try:
             if (data['type']==1):
                 resp=tracer.statusCountry(data['country'])
-                descr="Number of Cases in " + data["country"].upper() + " on " + resp['last_update'] + " is " + str(resp['cases']) + ", number of DEATHS is "+ str(resp['deaths']) + " number of RECOVERY " + str(resp["recovered"]) + "."
+                descr=data["country"].upper() + "\nCases : " + str(resp['cases']) + "\nDEATHS : "+ str(resp['deaths']) + "\nRECOVERY : " + str(resp["recovered"])
             else:
                 resp=tracer.diffCountry(data['country'])
-                descr="Number of New Cases in " + data["country"].upper() + " on " + resp['last_update'] + " is " + str(resp['new_cases']) + ", number of new DEATHS is "+ str(resp['new_deaths']) + " number of new RECOVERY is " + str(resp["new_recovered"]) + "."
+                descr=data["country"].upper()+"\nNew Cases : "  + str(resp['new_cases']) + "\nNew DEATHS : "+ str(resp['new_deaths']) + "\nNew RECOVERY : " + str(resp["new_recovered"])
             notification.createNotification("COVID19", descr, constant.ICON_NAME)
         except:
             continue
