@@ -1,2 +1,9 @@
 # File created by VS Code
 settings.json
+
+# Directories and files created by pyinstaller
+build/
+dist/
+__pycache__/
+code.spec
+
